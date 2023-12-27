@@ -1,0 +1,48 @@
+
+
+COLROS : 
+
+RED : #fb2f6c
+BLACK : #08121e
+
+WHITE : #ffffff
+
+FONTS : 
+
+font-family: 'Montserrat', sans-serif;
+font-family: 'Roboto', sans-serif;
+
+
+
+PAGES 
+
+- ADD MEDCINE
+- ADD REMINDER 
+- MEDCEINDES SCREEN 
+- REMINDERS SCREEEN 
+
+- TIME TO TAKE SCREEN 
+
+
+how it works 
+
+التسجيل كولي أمر
+التسجيل كتابع
+
+
+
+ولي الامر
+انشاء حساب عائلة
+كود خاص للعائلة
+
+الانضمام للعائلة 
+
+ولي الامر يضيف الادوية والتذكير فيها 
+
+التابع يرى الادوية ويتذكرها 
+
+صفحة الخريطة 
+
+يستطيع ولي الامر معرفة مكان التابع حاليا
+
+

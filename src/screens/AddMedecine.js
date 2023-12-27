@@ -1,0 +1,307 @@
+import React, {useContext, useState , useRef} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator
+} from 'react-native';
+import {COLORS, SPACING  , FONTFAMILY , BORDERRADIUS , FONTSIZE } from '../config/theme/theme';
+import RNPickerSelect from 'react-native-picker-select';
+import { AppContext } from '../context/AppContext';
+
+
+const AddMedecine = ({navigation}) => {
+  
+  const [isLoading , setIsLoading] = useState(false);
+  const [medicineType,setmedicineType] = useState('');
+  const [medicineName,setmedicineName] = useState('');
+  const [medicineQuantity,setmedicineQuantity] = useState('');
+  const [timesInDay, setTimesInDay] = useState('');
+
+  const popularMedications = [
+    'Acetaminophen (Tylenol)',
+    'Ibuprofen (Advil, Motrin)',
+    'Lisinopril',
+    'Levothyroxine (Synthroid)',
+    'Atorvastatin (Lipitor)'
+  ];
+
+  const { addMedecineMethod, error , success } = useContext(AppContext);
+
+
+  const addMedicine = () => {
+    setIsLoading(true);
+    
+     addMedecineMethod(medicineType , medicineName , medicineQuantity , timesInDay , () => {
+      navigation.navigate('Home');
+      setIsLoading(false);
+     });
+  }
+
+  const scrollViewRef = useRef();
+
+  return (
+
+    <ScrollView style={styles.container} bounces={false}
+    ref={scrollViewRef}
+    contentContainerStyle={{ flexGrow: 1 }} 
+    >
+    <StatusBar barStyle={'light-content'} />
+
+      <View className="flex flex-col items-center justify-center mt-8" style={styles.loginContainer} >
+
+      <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
+        
+
+        <View className="mt-12" >
+
+      <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+       >
+
+
+{error && (
+          <View className=" p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-end" >
+            <Text style={styles.errorText}  >{error}</Text>
+          </View>
+        )}
+
+    {success && (
+          <>
+          {scrollViewRef.current.scrollTo({ y: 0, animated: true })}
+          <View className=" p-4 text-sm text-white rounded-lg bg-green-500 dark:bg-gray-800 dark:text-green-400 text-right mb-5 flex items-end" >
+            <Text style={styles.errorText}  >{success}</Text>
+          </View>
+          </>
+
+        )}
+
+      <View className="mb-8">
+      <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
+      Medicine Type:  <Text className="text-red-500 text-base" > * </Text>  
+      </Text>
+
+      <View style={styles.inputBox} >
+
+      <RNPickerSelect
+        style={pickerSelectStyles}
+        pickerProps={{
+          accessibilityLabel: medicineType,
+        }}
+        placeholder={{
+          label: 'Choose',
+          value: '',
+        }}
+        selectedValue={medicineType || 'Acetaminophen (Tylenol)'} 
+        onValueChange={(itemValue) => setmedicineType(itemValue)}
+         items={popularMedications.map((show) => ({
+        label: show,
+        value: show,
+      }))}
+      >
+      </RNPickerSelect>
+      </View>
+
+      </View>
+
+      <View className="mb-8">
+      <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
+      Medicine Name:  <Text className="text-red-500 text-base" > * </Text>  
+      </Text>
+
+      <View style={styles.inputBox} >
+      <TextInput
+      style={styles.inputStyle}
+      className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight"
+      id="username"
+      placeholder="enter your name"
+      value={medicineName}
+      onChangeText={(text) => setmedicineName(text)}
+      />
+       </View>
+
+      </View>
+
+
+      <View className="mb-8">
+      <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
+     Quantity
+      </Text>
+      <View style={styles.inputBox} >
+      <TextInput
+      style={styles.inputStyle}
+      className="appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight "
+      id="email"
+      placeholder="2"
+      keyboardType='numeric'
+      value={medicineQuantity}
+      onChangeText={(text) => setmedicineQuantity(text) }
+      />
+
+      </View>
+
+      </View>
+
+      <View className="mb-8">
+      <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
+     Times Per Day
+      </Text>
+      <View style={styles.inputBox} >
+      <TextInput
+      style={styles.inputStyle}
+      className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight "
+      id="email"
+      placeholder="2"
+      keyboardType='numeric'
+      value={timesInDay}
+      onChangeText={(text) => setTimesInDay(text) }
+      />
+
+      </View>
+
+      </View>
+
+
+      </KeyboardAvoidingView>
+
+      {isLoading ? (
+      <View  className="flex items-center justify-center my-5" >
+          <ActivityIndicator size={'large'} color={COLORS.PrimaryColor} />
+        </View>
+    ) : (
+      <TouchableOpacity
+      className="mt-8  rounded-full p-3"
+      style={styles.button}
+      onPress={() => addMedicine() }
+      >
+      <Text style={styles.buttonText}>  Add Medicine   </Text>
+      </TouchableOpacity>
+    )}
+
+
+    <TouchableOpacity
+    className="text-white mt-3 text-sm px-6 py-4 "
+      
+      onPress={() => navigation.goBack()  }>
+      <Text style={styles.buttonText}>  Go Back  </Text>
+    </TouchableOpacity>
+
+      </View>
+
+
+      </KeyboardAvoidingView>
+
+      </View>
+    
+    </ScrollView>
+  );
+};
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    minWidth: '100%',
+    fontSize: 16,
+    fontFamily: FONTFAMILY.tajawal,
+    color: COLORS.White,
+    paddingVertical: SPACING.space_8,
+    paddingHorizontal: SPACING.space_32,
+    borderWidth: 2,
+    borderColor: COLORS.WhiteRGBA15,
+    borderRadius: BORDERRADIUS.radius_25,
+    textAlign: 'left',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    minWidth: '100%',
+    fontSize: 16,
+    fontFamily: FONTFAMILY.tajawal,
+    color: COLORS.White,
+    paddingVertical: SPACING.space_8,
+    paddingHorizontal: SPACING.space_32,
+    borderWidth: 2,
+    borderColor: COLORS.WhiteRGBA15,
+    borderRadius: BORDERRADIUS.radius_25,
+    textAlign: 'left',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
+
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    backgroundColor: COLORS.SecondaryColor,
+    paddingHorizontal: 20,
+    height: '100%',
+    direction: 'ltr'
+  },
+
+  InputHeaderContainer: {
+    marginTop: SPACING.space_36,
+  },
+  starIcon: {
+    color: COLORS.Green,
+  },
+  icon_logo: {
+    width: 200,
+    height: 50,
+  },
+  button: {
+    backgroundColor: COLORS.PrimaryColor,
+    borderRadius: BORDERRADIUS.radius_25,
+  },
+  buttonText: {
+    fontFamily: FONTFAMILY.secondary_bold,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+  },
+  inputBox: {
+    display: 'flex',
+    justifyContent: 'space-between',
+
+    borderWidth: 2,
+    borderColor: COLORS.WhiteRGBA15,
+    borderRadius: BORDERRADIUS.radius_8,
+    flexDirection: 'row',
+    borderWidth: 2,
+    borderColor: COLORS.White,
+    width: '100%',
+  },
+  inputStyle: {
+    width: '100%',
+    paddingVertical: SPACING.space_2,
+    fontFamily: FONTFAMILY.secondary,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.White,
+    textAlign: 'left',
+  },
+  textInput: {
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 10,
+    fontFamily: FONTFAMILY.secondary,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.White,
+  },
+  loginContainer: {
+    flex: 1,
+    alignItems:'center',
+    justifyContent: 'center',
+  },
+  errorText: {
+    fontFamily: FONTFAMILY.primary_bold,
+    textAlign: 'left'
+  },
+
+});
+
+export default AddMedecine;

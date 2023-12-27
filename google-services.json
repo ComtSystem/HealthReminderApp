@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "440671774416",
+    "project_id": "ju-health-reminder",
+    "storage_bucket": "ju-health-reminder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440671774416:android:e35c8da44dcb38047da0d5",
+        "android_client_info": {
+          "package_name": "com.juhealthh.reminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmuXBhfpbamabcrGo-ds_9Q-XiYQOcx6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

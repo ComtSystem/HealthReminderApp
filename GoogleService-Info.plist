@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDHUZgcqtL4uqf4L2vvl4cwra_C0xG3Xcs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>440671774416</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.juhealthh.reminder</string>
+	<key>PROJECT_ID</key>
+	<string>ju-health-reminder</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ju-health-reminder.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:440671774416:ios:d36464edde903f957da0d5</string>
+</dict>
+</plist>
