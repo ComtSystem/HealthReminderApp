@@ -1,5 +1,5 @@
 import React, { createContext, useState  } from "react";
-import {  query , collection , getDocs , db , setDoc , doc  } from "../config/firebase/firebase";
+import {  query , collection , getDocs , db , setDoc , doc  , where , updateDoc} from "../config/firebase/firebase";
 export const AppContext = createContext();
 
 
@@ -21,11 +21,11 @@ export const AppContextProvider = ({ children }) => {
 }
 
 
-  const addMedecineMethod = async ( type , name , quantity, per , callBack) => {
+  const addMedecineMethod = async ( type , name , quantity, per , familyCode ,  callBack) => {
 
     setIsLoading(true);
     if (type == '' ) {
-      setError("يرجى ادخال نوع الدواء ");
+      setError("please enter type of medecine");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -33,7 +33,7 @@ export const AppContextProvider = ({ children }) => {
     }
 
     if (name == '' ) {
-      setError("يرجى ادخال اسم الدواء ");
+      setError("please enter name of medecine");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -41,7 +41,7 @@ export const AppContextProvider = ({ children }) => {
     }
 
     if (quantity == '' ) {
-      setError("يرجى ادخال تصنيف الدواء ");
+      setError("please enter category of medecine");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -49,7 +49,7 @@ export const AppContextProvider = ({ children }) => {
     }
 
     if (per == '' ) {
-      setError("يرجى ادخال كمية الدواء ");
+      setError("please enter medcien quantity");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -66,9 +66,10 @@ export const AppContextProvider = ({ children }) => {
         med_name: name,
         med_quantity: quantity,
         med_per: per,
+        family_code : familyCode,
       });
 
-      setSucces("تمت اضافة الدواء بنجاح");
+      setSucces("added successfully");
       setTimeout( () => {
         setSucces('');
         if (callBack) {
@@ -78,7 +79,7 @@ export const AppContextProvider = ({ children }) => {
      
     } catch (error) {
       // Error occurred while creating the event, handle the error
-     setError("حدث خطأ في العملية");
+     setError("Something went wrong");
      setTimeout( () => {
       setError('');
     } , 2500 );
@@ -86,11 +87,11 @@ export const AppContextProvider = ({ children }) => {
 
   }
 
-  const addReminderMethod = async ( startDate , endDate , theTime, type , callBack) => {
+  const addReminderMethod = async ( startDate , endDate , theTime, type ,  familyCode , callBack) => {
 
     setIsLoading(true);
     if (type == '' ) {
-      setError("يرجى ادخال نوع الدواء ");
+      setError("please enter type of medecine");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -98,7 +99,7 @@ export const AppContextProvider = ({ children }) => {
     }
 
     if (startDate == '' ) {
-      setError("يرجى ادخال تاريخ الدواء ");
+      setError("please enter date of medecine");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -106,7 +107,7 @@ export const AppContextProvider = ({ children }) => {
     }
 
     if (endDate == '' ) {
-      setError("يرجى ادخال انتهاء الدواء ");
+      setError("please enter end date of medecine");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -114,7 +115,7 @@ export const AppContextProvider = ({ children }) => {
     }
 
     if (theTime == '' ) {
-      setError("يرجى ادخال الوقت ");
+      setError("please enter time for taking the medecine");
        setTimeout(() => {
       setError('');
     } , 3000);
@@ -129,9 +130,10 @@ export const AppContextProvider = ({ children }) => {
         remind_start_date: startDate,
         remind_end_date: endDate,
         remind_time: theTime,
+        family_code : familyCode,
       });
 
-      setSucces("تمت اضافة التنبيه بنجاح");
+      setSucces("added successfully");
       setTimeout( () => {
         setSucces('');
         if (callBack) {
@@ -141,7 +143,7 @@ export const AppContextProvider = ({ children }) => {
      
     } catch (error) {
       // Error occurred while creating the event, handle the error
-     setError("حدث خطأ في العملية");
+     setError("Something went wrong");
      setTimeout( () => {
       setError('');
     } , 2500 );
@@ -149,6 +151,158 @@ export const AppContextProvider = ({ children }) => {
 
   }
 
+  function getRandomOffset(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  const addFamilyMethod = async ( familyName , familyCode , userId , callBack) => {
+
+    setIsLoading(true);
+    if (familyName == '' ) {
+      setError("Please enter family name");
+       setTimeout(() => {
+      setError('');
+    } , 3000);
+      return;
+    }
+
+    if (familyCode == '' ) {
+      setError("Please enter family code");
+       setTimeout(() => {
+      setError('');
+    } , 3000);
+      return;
+    }
+
+    let idMaked = makeid(20);
+   
+    try {
+      const families = await setDoc(doc(db, 'families', idMaked), {
+        family_name: familyName,
+        family_code: familyCode,
+        user_id : userId,
+      });
+
+      const docRef = doc(db, "users", userId);
+  
+      const data = {
+        joinedFamily: true,
+        familyId: familyCode,
+      };
+  
+     await updateDoc(docRef, data);
+
+
+     setSucces("added successfully");
+      setTimeout( () => {
+        setSucces('');
+        if (callBack) {
+          callBack();
+        }
+      } , 2500 );
+     
+    } catch (error) {
+      // Error occurred while creating the event, handle the error
+     setError("Something went wrong");
+     setTimeout( () => {
+      setError('');
+    } , 2500 );
+    }
+
+  }
+
+  const joinFamilyMethod = async ( familyCode, userId ,  callBack) => {
+
+    setIsLoading(true);
+    if (familyCode == '' ) {
+      setError("Please Enter Family Code");
+       setTimeout(() => {
+      setError('');
+    } , 3000);
+      return;
+    }
+
+   
+    try {
+      const q = query(collection(db, "families"), where("family_code", "==", familyCode ) );
+      const querySnapshot = await getDocs(q);
+      const familiesDataArray = querySnapshot.docs ? querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) : '';
+
+      if ( familiesDataArray.length !== 0  ) {
+
+      // Original latitude and longitude values
+      const originalLatitude = 16.909683;
+      const originalLongitude = 42.567902;
+
+      // Generate random offsets (adjust these values as needed)
+      const latitudeOffset = getRandomOffset(-0.001, 0.001); // Modify the range as needed
+      const longitudeOffset = getRandomOffset(-0.001, 0.001); // Modify the range as needed
+
+      // Calculate the new latitude and longitude values
+      const newLatitude = originalLatitude + latitudeOffset;
+      const newLongitude = originalLongitude + longitudeOffset;
+
+      // Update the Firestore document
+      const docRef = doc(db, "users", userId);
+
+      const data = {
+        joinedFamily: true,
+        familyId: familyCode,
+        latitude: newLatitude,
+        longitude: newLongitude
+      };
+    
+       await updateDoc(docRef, data);
+        setSucces("Joined successfully");
+        setIsLoading(false);
+    }
+    else {
+      setError("we could not find that family");
+      setTimeout(() => {
+        setError('');
+      } , 3000);
+    }
+      setIsLoading(false);
+     
+      setTimeout( () => {
+        setSucces('');
+        if (callBack) {
+          callBack();
+        }
+      } , 2500 );
+     
+    } catch (error) {
+     setError("Something went wrong");
+     setTimeout( () => {
+      setError('');
+    } , 2500 );
+    }
+  }
+
+
+
+
+  function convertTimeToHourMinuteString(timeObject) {
+    const date = new Date(timeObject.seconds * 1000); // Convert seconds to milliseconds
+    const hours = date.getHours().toString().padStart(2, '0'); // Get hours and pad with leading zero if necessary
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // Get minutes and pad with leading zero if necessary
+  
+    return `${hours}:${minutes}`;
+  }
+
+  function convertTimeToDateString(timeObject) {
+    if (!timeObject.seconds) {
+      return ''; // Return an empty string if seconds property is undefined
+    }
+  
+    const date = new Date(timeObject.seconds * 1000); // Convert seconds to milliseconds
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based, so add 1
+    const day = date.getDate().toString().padStart(2, '0');
+
+  
+    return `${year}-${month}-${day}`;
+  }
 
 
   return (
@@ -158,7 +312,11 @@ export const AppContextProvider = ({ children }) => {
         error,
         success,
         addMedecineMethod,
-        addReminderMethod
+        addReminderMethod,
+        addFamilyMethod,
+        joinFamilyMethod,
+        convertTimeToHourMinuteString,
+        convertTimeToDateString
        }}
     >
       {children}

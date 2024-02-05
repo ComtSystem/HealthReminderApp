@@ -4,7 +4,6 @@ import TabNavigator from './TabNavigator';
 import UserAccountScreen from '../screens/UserAccountScreen';
 import SignupScreen from '../screens/SignupScreen';
 import FaqScreen from '../screens/FaqScreen';
-import ContactUsScreen from '../screens/ContactUsScreen';
 import WhoWeAreScreen from '../screens/WhoWeAreScreen';
 import {COLORS , FONTFAMILY} from '../config/theme/theme';
 import { useNavigation } from "@react-navigation/native";
@@ -79,12 +78,35 @@ export const AppNavigator = () => {
         drawerLabel: "Account",
         IconCategory: 'AntDesign',
         iconName: 'user',
-        
       }}
       component={UserAccountScreen}
     />
 
 <Drawer.Screen
+      name="AccountOptions"
+      options={{
+        drawerLabel: "Signup",
+        IconCategory: 'Ionicons',
+        iconName: 'create-outline',
+        header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Choose Option"} />
+      }}
+      component={CreateAccountOptions}
+    />
+
+
+
+<Drawer.Screen
+      name="LoginScreen"
+      component={LoginScreen}
+      options={{
+        drawerLabel: "Login",
+        IconCategory: 'AntDesign',
+        iconName: 'login',
+        header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Login"} />
+      }}
+    />
+
+  <Drawer.Screen
       name="SignupScreen"
       component={SignupScreen}
       options={{
@@ -92,16 +114,6 @@ export const AppNavigator = () => {
     header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Create Account"} />
       }}
     />
-
-<Drawer.Screen
-      name="LoginScreen"
-      component={LoginScreen}
-      options={{
-    drawerLabel: '',
-    header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Login"} />
-      }}
-    />
-
 
      
 <Drawer.Screen
@@ -113,14 +125,6 @@ export const AppNavigator = () => {
       }}
     />
 
-    <Drawer.Screen
-      name="ContactUsScreen"
-      component={ContactUsScreen}
-       options={{
-    drawerLabel: '',
-    header: (props) => <HeaderScreenGoBack navigation={navigation} title={"contact Us"} />
-      }}
-    />
 
     <Drawer.Screen
       name="WhoWeAreScreen"
@@ -132,13 +136,7 @@ export const AppNavigator = () => {
     />
 
 
-    <Drawer.Screen
-      name="AccountOptions"
-      options={{
-        drawerLabel: '',
-          }}
-      component={CreateAccountOptions}
-    />
+
 
     <Drawer.Screen
       name="Loading"

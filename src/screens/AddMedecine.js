@@ -16,7 +16,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { AppContext } from '../context/AppContext';
 
 
-const AddMedecine = ({navigation}) => {
+const AddMedecine = ({navigation , route}) => {
   
   const [isLoading , setIsLoading] = useState(false);
   const [medicineType,setmedicineType] = useState('');
@@ -38,10 +38,14 @@ const AddMedecine = ({navigation}) => {
   const addMedicine = () => {
     setIsLoading(true);
     
-     addMedecineMethod(medicineType , medicineName , medicineQuantity , timesInDay , () => {
+     addMedecineMethod(medicineType , medicineName , medicineQuantity , timesInDay , route.params.familyCode ,  () => {
       navigation.navigate('Home');
       setIsLoading(false);
      });
+
+     setTimeout(() => {
+      setIsLoading(false);
+     } , 3500)
   }
 
   const scrollViewRef = useRef();
@@ -121,7 +125,7 @@ const AddMedecine = ({navigation}) => {
       style={styles.inputStyle}
       className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight"
       id="username"
-      placeholder="enter your name"
+     
       value={medicineName}
       onChangeText={(text) => setmedicineName(text)}
       />
@@ -139,7 +143,7 @@ const AddMedecine = ({navigation}) => {
       style={styles.inputStyle}
       className="appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 leading-tight "
       id="email"
-      placeholder="2"
+     
       keyboardType='numeric'
       value={medicineQuantity}
       onChangeText={(text) => setmedicineQuantity(text) }
@@ -158,7 +162,7 @@ const AddMedecine = ({navigation}) => {
       style={styles.inputStyle}
       className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight "
       id="email"
-      placeholder="2"
+    
       keyboardType='numeric'
       value={timesInDay}
       onChangeText={(text) => setTimesInDay(text) }

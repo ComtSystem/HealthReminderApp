@@ -1,7 +1,7 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { View  } from 'react-native';
 import FaqScreen from '../screens/FaqScreen';
-import ContactUsScreen from '../screens/ContactUsScreen';
+
 import WhoWeAreScreen from '../screens/WhoWeAreScreen';
 import {COLORS , FONTFAMILY} from '../config/theme/theme';
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +15,8 @@ import AddMedecine from '../screens/AddMedecine';
 import AddReminder from '../screens/AddReminder';
 import AddFamily from '../screens/AddFamily';
 import JoinFamily from '../screens/JoinFamily';
+import EditAccountScreen from '../screens/EditAccountScreen';
+import MapScreen from '../screens/MapScreen';
 
 
 const Drawer = createDrawerNavigator();
@@ -80,6 +82,29 @@ export const AppAuthNavigator = () => {
       }}
       component={UserAccountAuth}
     />
+
+<Drawer.Screen
+        name="FaqScreen"
+        component={FaqScreen}
+        options={{
+          drawerLabel: "Faq",
+          IconCategory: 'MaterialCommunityIcons',
+          iconName: 'comment-question-outline',
+        header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Faq"} />
+        }}
+        />
+
+
+    <Drawer.Screen
+      name="WhoWeAreScreen"
+      component={WhoWeAreScreen}
+       options={{
+        drawerLabel: "Who We Are",
+        IconCategory: 'MaterialCommunityIcons',
+        iconName: 'information-outline',
+    header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Who we are"} />
+      }}
+    />
     
     <Drawer.Screen
       name="AddMedecine"
@@ -103,32 +128,7 @@ export const AppAuthNavigator = () => {
       component={AddReminder}
     />
       
-    <Drawer.Screen
-        name="FaqScreen"
-        component={FaqScreen}
-        options={{
-        drawerLabel: '',
-        header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Faq"} />
-        }}
-        />
-
-    <Drawer.Screen
-      name="ContactUsScreen"
-      component={ContactUsScreen}
-       options={{
-    drawerLabel: '',
-    header: (props) => <HeaderScreenGoBack navigation={navigation} title={"contact Us"} />
-      }}
-    />
-
-    <Drawer.Screen
-      name="WhoWeAreScreen"
-      component={WhoWeAreScreen}
-       options={{
-    drawerLabel: '',
-    header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Who we are"} />
-      }}
-    />
+    
 
     <Drawer.Screen
       name="AddFamily"
@@ -148,6 +148,15 @@ export const AppAuthNavigator = () => {
       }}
     />
 
+      <Drawer.Screen
+        name="EditAccountScreen"
+        component={EditAccountScreen}
+        options={{
+        drawerLabel: '',
+        header: (props) => <HeaderScreenGoBack navigation={navigation} title={"Edit Account Info"} />
+          }}
+      />
+
 
 <Drawer.Screen
       name="Loading"
@@ -157,6 +166,8 @@ export const AppAuthNavigator = () => {
           }}
       component={LoadingScreen}
     />
+
+
    
   
   </Drawer.Navigator>

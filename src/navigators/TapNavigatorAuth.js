@@ -5,10 +5,12 @@ import { COLORS, FONTSIZE } from '../config/theme/theme';
 import Octicons from '@expo/vector-icons/Octicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from '@expo/vector-icons/Feather';
 import HomeScreen from '../screens/HomeScreen';
 import UserAccountAuth from '../screens/UserAccountAuth';
 import RemindersScreen from '../screens/RemindersScreen';
 import MedecinesScreen from '../screens/MedecinesScreen';
+import MapScreen from '../screens/MapScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,7 +52,7 @@ const TapNavigatorAuth = () => {
                 <Octicons
                   name="home"
                   color={COLORS.White}
-                  size={FONTSIZE.size_18}
+                  size={FONTSIZE.size_16}
                 />
               </View>
             );
@@ -74,7 +76,7 @@ const TapNavigatorAuth = () => {
                  <AntDesign
                   name="medicinebox"
                   color={COLORS.White}
-                  size={FONTSIZE.size_18}
+                  size={FONTSIZE.size_16}
                 />
               </View>
             );
@@ -98,7 +100,7 @@ const TapNavigatorAuth = () => {
                  <Ionicons
                   name="notifications-outline"
                   color={COLORS.White}
-                  size={FONTSIZE.size_18}
+                  size={FONTSIZE.size_16}
                 />
               </View>
             );
@@ -122,7 +124,31 @@ const TapNavigatorAuth = () => {
                  <AntDesign
                   name="user"
                   color={COLORS.White}
-                  size={FONTSIZE.size_18}
+                  size={FONTSIZE.size_16}
+                />
+              </View>
+            );
+          },
+        }}
+      />
+
+    <Tab.Screen
+        name="MapScreen"
+        component={MapScreen}
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused }) => {
+            return (
+              <View
+                style={[
+                  styles.activeTabBackground,
+                  focused ? { backgroundColor: COLORS.PrimaryColor } : {},
+                ]}
+                >
+                 <Feather
+                  name="map"
+                  color={COLORS.White}
+                  size={FONTSIZE.size_16}
                 />
               </View>
             );

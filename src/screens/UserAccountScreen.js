@@ -45,12 +45,7 @@ const UserAccountScreen = ({navigation}) => {
           navigation={navigation}
           toNav={"WhoWeAreScreen"}
         />
-        <SettingComponent
-          icon="phone-hangup-outline"
-          heading="Contact Us"
-          navigation={navigation}
-          toNav={"ContactUsScreen"}
-        />
+       
       </View>
       </View>
     

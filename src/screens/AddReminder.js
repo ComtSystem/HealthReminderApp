@@ -1,4 +1,4 @@
-import React, {useContext, useState , useRef} from 'react';
+import React, {useContext, useState , useRef , useCallback} from 'react';
 import {
   Text,
   View,
@@ -8,36 +8,65 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  Button,
   ActivityIndicator
 } from 'react-native';
 import {COLORS, SPACING  , FONTFAMILY , BORDERRADIUS , FONTSIZE } from '../config/theme/theme';
 import RNPickerSelect from 'react-native-picker-select';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {  query , collection , getDocs , db  , getDoc , doc , where}  from "../config/firebase/firebase";
+import { useFocusEffect } from '@react-navigation/native';
 import { AppContext } from '../context/AppContext';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
-const AddReminder = ({navigation}) => {
-  
+const AddReminder = ({navigation , route }) => {
+  const [isStartDateVisible, setIsStartDateVisible] = useState(false);
+  const [isEndDateVisible, setIsEndDateVisible] = useState(false);
+  const [isTimeVisible, setIsTimeVisible] = useState(false);
+
   const [isLoading , setIsLoading] = useState(false);
   const [medicineType,setmedicineType] = useState('');
   const [startDate , setStartDate] = useState(new Date());
   const [endDate , setEndDate] = useState(new Date());
   const [time , setTime] = useState(new Date());
+  const [medecinesList, setMedecinesList] = useState(null);
 
-
-  const handleStartDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || timeDate;
-    setStartDate(currentDate);
+  
+  const getMedecinesData = async () => {
+    try {
+      setIsLoading(true);
+      const q = query(collection(db, "Medecines") , where("family_code", "==", route.params.familyCode ) );
+      const querySnapshot = await getDocs(q);
+      const medData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      setMedecinesList(medData);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleEndDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || timeDate;
-    setEndDate(currentDate);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      getMedecinesData();
+    }, [])
+  );
+
+
+
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
   };
 
-  const handleTimeChange = (event, selectedTime) => {
-    const currentTime = selectedTime || startTime;
-    setTime(currentTime);
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+
+  const handleTimeChange = (time) => {
+    setTime(time);
   };
 
   const popularMedications = [
@@ -52,16 +81,22 @@ const AddReminder = ({navigation}) => {
   const addReminder = () => {
     setIsLoading(true);
     
-    addReminderMethod(startDate , endDate , time , medicineType , () => {
+    addReminderMethod(startDate , endDate , time , medicineType ,  route.params.familyCode , () => {
      navigation.navigate('Home');
      setIsLoading(false);
     });
+
+    setTimeout(() => {
+      setIsLoading(false);
+     } , 3500)
+     
   }
 
 
-  const { addReminderMethod, error , success } = useContext(AppContext);
+  const { addReminderMethod, error , success , setError } = useContext(AppContext);
 
   const scrollViewRef = useRef();
+
 
 
   return (
@@ -104,14 +139,24 @@ const AddReminder = ({navigation}) => {
       </Text>
     
     <View className="mt-2 " style={styles.datePickerButton} >
-    <DateTimePicker
-          className=""
-            value={startDate}
-            mode="date"
-            display="default"
-            onChange={handleStartDateChange}
-          />
+      <Button title="Select Start Date" onPress={() => setIsStartDateVisible(!isStartDateVisible) } />
     </View>
+
+    <View>
+    {startDate && (
+        <Text style={styles.selectedDate}>
+          Selected Date: {startDate.toISOString()}
+        </Text>
+      )}
+    </View>
+
+    <DateTimePickerModal
+    isDarkModeEnabled={true}
+            isVisible={isStartDateVisible}
+        mode="date" 
+        onConfirm={handleStartDateChange}
+        onCancel={() => setIsStartDateVisible(false) }
+      />
 
   </View>
 
@@ -119,14 +164,26 @@ const AddReminder = ({navigation}) => {
       <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
       Select End Date : <Text className="text-red-500 text-base" > * </Text>  
       </Text>
+
+      <View className="mt-2 " style={styles.datePickerButton} >
+      <Button title="Select End Date" onPress={() => setIsEndDateVisible(!isEndDateVisible) } />
+    </View>
+
+    <View>
+    {endDate && (
+        <Text style={styles.selectedDate}>
+          End Date: {endDate.toISOString()}
+        </Text>
+      )}
+    </View>
     
     <View className="mt-2 " style={styles.datePickerButton} >
-    <DateTimePicker
-          className=""
-            value={endDate}
+    <DateTimePickerModal
+        isDarkModeEnabled={true}
+        isVisible={isEndDateVisible}
             mode="date"
-            display="default"
             onChange={handleEndDateChange}
+            onCancel={() => setIsEndDateVisible(false) }
           />
     </View>
 
@@ -136,14 +193,26 @@ const AddReminder = ({navigation}) => {
     <Text style={styles.textInput} className="block text-gray-700 font-bold mb-2" htmlFor="username">
    Select Time <Text className="text-red-500 text-base" > * </Text>  
     </Text>
+
+    <View className="mt-2 " style={styles.datePickerButton} >
+      <Button title="Select Time" onPress={() => setIsTimeVisible(!isTimeVisible) } />
+    </View>
+
+    <View>
+    {time && (
+        <Text style={styles.selectedDate}>
+          Time: {time.toLocaleTimeString()}
+        </Text>
+      )}
+    </View>
    
     <View style={styles.timePickerButton} >
-    <DateTimePicker
-          value={time}
+    <DateTimePickerModal
+     isDarkModeEnabled={true}
+     isVisible={isTimeVisible}
           mode="time"
-          is24Hour={true} 
-          display="default"
-          onChange={handleTimeChange}
+          onConfirm={handleTimeChange}
+          onCancel={() => setIsTimeVisible(false) }
         />
   </View>
 
@@ -155,26 +224,37 @@ const AddReminder = ({navigation}) => {
      Select medicine:  <Text className="text-red-500 text-base" > * </Text>  
       </Text>
 
-      <View style={styles.inputBox} >
+ 
+   <View style={styles.inputBox} >
 
-      <RNPickerSelect
-        style={pickerSelectStyles}
-        pickerProps={{
-          accessibilityLabel: medicineType,
-        }}
-        placeholder={{
-          label: 'Choose',
-          value: '',
-        }}
-        selectedValue={medicineType || 'Acetaminophen (Tylenol)'} 
-        onValueChange={(itemValue) => setmedicineType(itemValue)}
-         items={popularMedications.map((show) => ({
-        label: show,
-        value: show,
-      }))}
-      >
-      </RNPickerSelect>
-      </View>
+<RNPickerSelect
+  style={pickerSelectStyles}
+  pickerProps={{
+    accessibilityLabel: medicineType,
+  }}
+  placeholder={{
+    label: 'Choose',
+    value: '',
+  }}
+  selectedValue={medicineType || 'Acetaminophen (Tylenol)'}
+  onValueChange={(itemValue) => setmedicineType(itemValue)}
+  items={
+    medecinesList &&
+    medecinesList.length !== 0
+      ? medecinesList.map((show) => ({
+          label: show?.med_name,
+          value: show?.med_name,
+        }))
+      : popularMedications.map((show) => ({
+          label: show,
+          value: show,
+        }))
+  }
+    >
+   </RNPickerSelect>
+   </View>
+   
+   
 
       </View>
 
@@ -333,7 +413,18 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
-
+  datePickerContainer: {
+    backgroundColor: 'white',
+  },
+  datePickerContainerIOS: {
+    backgroundColor: 'white',
+  },
+  selectedDate: {
+    marginTop: 5,
+    fontSize: 13,
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
 
 

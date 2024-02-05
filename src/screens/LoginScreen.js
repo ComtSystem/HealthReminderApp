@@ -63,7 +63,7 @@ const LoginScreen = ({navigation}) => {
  <TextInput
    style={styles.inputStyle}
    id="email"
-   placeholder="أدخل البريد الاكلتروني"
+  
   textContentType="emailAddress"
       keyboardType="email-address"
       autoCapitalize="none"
@@ -87,7 +87,7 @@ const LoginScreen = ({navigation}) => {
  <TextInput
    style={styles.inputStyle}
    id="password"
-  placeholder="*********"
+ 
   textContentType="password"
       secureTextEntry
       autoCapitalize="none"

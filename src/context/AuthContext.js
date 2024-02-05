@@ -40,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
   const onLogin =  ( email , password ) => {
     setIsLoading(true);
     if (email == '' ) {
-      setError("يرجى ادخال الايميل الخاص بك");
+      setError("please enter your email");
        setTimeout(() => {
       setError('');
       setIsLoading(false);
@@ -49,7 +49,7 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     if (password == '' ) {
-      setError("يرجى ادخال كلمة المرور الخاصة بك");
+      setError("please enter your password");
        setTimeout(() => {
       setError('');
       setIsLoading(false);
@@ -63,9 +63,7 @@ export const AuthContextProvider = ({ children }) => {
     .then(  async (userCredential) => {
 
       const q = query(collection(db, "users"), where("email", "==", email ) );
- 
       const querySnapshot = await getDocs(q);
-    
       const usersDataArray = querySnapshot.docs ? querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) : '';
 
       if ( usersDataArray.length !== 0  ) {
@@ -75,6 +73,7 @@ export const AuthContextProvider = ({ children }) => {
           full_name: usersDataArray[0].full_name,
           phone_number: usersDataArray[0].phone_number,
           email: usersDataArray[0].email,
+          account_type: usersDataArray[0].account_type,
         }
         await AsyncStorage.setItem('reminder_user', JSON.stringify(userObject));
         const user = userCredential.user;
@@ -82,7 +81,7 @@ export const AuthContextProvider = ({ children }) => {
         setIsLoading(false);
     }
     else {
-      setError("لم نعثر على المستخدم");
+      setError("we could not find the user");
       setTimeout(() => {
         setError('');
       } , 3000);
@@ -103,7 +102,7 @@ export const AuthContextProvider = ({ children }) => {
     setIsLoading(true);
 
     if (fullName == '' ) {
-      setError("يرجى ادخال اسمك الكامل");
+      setError("please enter your name");
        setTimeout(() => {
       setError('');
       
@@ -112,7 +111,7 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     if (phoneNumber == '' ) {
-      setError("يرجى ادخال رقم الهاتف");
+      setError("please enter your phone number");
        setTimeout(() => {
       setError('');
       
@@ -121,7 +120,7 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     if (userEmail == '' ) {
-      setError("يرجى ادخال الايميل الخاص بك");
+      setError("please enter your email");
        setTimeout(() => {
       setError('');
       
@@ -130,7 +129,7 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     if (password == '' ) {
-      setError("يرجى ادخال كلمة المرور الخاصة بك");
+      setError("please enter your password");
        setTimeout(() => {
       setError('');
       
@@ -145,6 +144,10 @@ export const AuthContextProvider = ({ children }) => {
         phone_number: phoneNumber,
         email: userEmail,
         account_type: accountType,
+        joinedFamily: false,
+        familyId: '',
+        latitude: '',
+        longitude: ''
         });
 
     createUserWithEmailAndPassword(auth, userEmail, password)
@@ -155,6 +158,7 @@ export const AuthContextProvider = ({ children }) => {
             full_name: fullName,
             phone_number: phoneNumber,
             email: userEmail,
+            account_type: accountType
           }
           await AsyncStorage.setItem('reminder_user', JSON.stringify(userObject));
          
@@ -169,23 +173,7 @@ export const AuthContextProvider = ({ children }) => {
       })
       .catch((e) => {
         setIsLoading(false);
-       
-        if (e.code === "auth/email-already-in-use") {
-          setError("الايميل موجود بالفعل , يرجى تسجيل الدخول");
-        } else if (e.code === "auth/invalid-email") {
-          setError("الايميل غير صحيح , يرجى كتابة الايميل بشكل صحيح");
-        } 
-         else if (e.code === "auth/weak-password") {
-          setError("كلمة المرور ضعيفة يرجى ادخال كلمة مرور أقوى");
-        } else if (e.code === "auth/network-request-failed") {
-          setError("حدث خطأ في الشبكة");
-        } else if (e.code === "auth/too-many-requests") {
-          setError("تم تجاوز عدد المحاولات المسموح به , يرجى المحاولة في وقت أخر");
-        } else if (e.code === "auth/user-disabled") {
-          setError("تم تعطيل حسابك , يرجى التواصل مع الدعم");
-        } else {
-          setError(e.toString());
-        }
+        setError(e.toString());
         setTimeout(() => {
           setError('');
         } , 3000);
@@ -193,6 +181,55 @@ export const AuthContextProvider = ({ children }) => {
       });
 
    }
+
+   const editUserProfile = async ( id , fullName  , phoneNumber , accountType ,  callBack ) => {
+
+    setIsLoading(true);
+
+    if (fullName == '' ) {
+      setError("please enter your name");
+       setTimeout(() => {
+      setError('');
+    } , 3000);
+      return;
+    }
+
+    if (phoneNumber == '' ) {
+      setError("please enter your phone number");
+       setTimeout(() => {
+      setError('');
+    } , 3000);
+      return;
+    }
+
+    const existingValue = await AsyncStorage.getItem('reminder_user');
+    const parsedValue = JSON.parse(existingValue);
+    parsedValue.full_name = fullName;
+    parsedValue.phone_number = phoneNumber;
+    parsedValue.account_type = accountType;
+    await AsyncStorage.setItem('reminder_user', JSON.stringify(parsedValue));
+
+
+    const docRef = doc(db, "users", id);
+  
+    const data = {
+      phone_number: phoneNumber,
+      full_name: fullName,
+    };
+
+   await updateDoc(docRef, data);
+
+    setSuccess("successfully added");
+   
+    setTimeout(() => {
+      setSuccess(null);
+      if (callBack) {
+        callBack();
+      }
+      setIsLoading(false);
+    } , 3000);
+  }
+
 
    const onLogout = () => {
     signOut(auth).then(() => {
@@ -214,7 +251,8 @@ export const AuthContextProvider = ({ children }) => {
         success,
         onLogin,
         onRegister,
-        onLogout
+        onLogout,
+        editUserProfile
        }}
     >
       {children}

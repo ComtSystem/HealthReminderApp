@@ -16,7 +16,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { AppContext } from '../context/AppContext';
 
 
-const AddFamily = ({navigation}) => {
+const AddFamily = ({navigation , route}) => {
   
   const [isLoading , setIsLoading] = useState(false);
   const [ familyName, setFamilyName] = useState('');
@@ -31,10 +31,11 @@ const AddFamily = ({navigation}) => {
   const addFamily = () => {
     setIsLoading(true);
     
-     addFamilyMethod(familyName , familyCode , () => {
+     addFamilyMethod(familyName , familyCode , route.params.uid , () => {
       navigation.navigate('Home');
       setIsLoading(false);
      });
+    
   }
 
   const scrollViewRef = useRef();
@@ -60,7 +61,7 @@ const AddFamily = ({navigation}) => {
        >
 
 
-{error && (
+    {error && (
           <View className=" p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-end" >
             <Text style={styles.errorText}  >{error}</Text>
           </View>
@@ -73,7 +74,6 @@ const AddFamily = ({navigation}) => {
             <Text style={styles.errorText}  >{success}</Text>
           </View>
           </>
-
         )}
 
   
@@ -88,7 +88,7 @@ const AddFamily = ({navigation}) => {
       style={styles.inputStyle}
       className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight"
       id="username"
-      placeholder="enter your family Name"
+  
       value={familyName}
       onChangeText={(text) => setFamilyName(text)}
       />
@@ -106,7 +106,7 @@ const AddFamily = ({navigation}) => {
       style={styles.inputStyle}
       className="appearance-none border rounded-xl w-full py-4 px-3 text-gray-700 leading-tight"
       id="username"
-      placeholder="enter your Family Code"
+   
       value={familyCode}
       onChangeText={(text) => setFamilyCode(text)}
       />

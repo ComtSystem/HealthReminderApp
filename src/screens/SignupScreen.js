@@ -57,7 +57,7 @@ const SignupScreen = ({navigation , route}) => {
       </Text>
 
       {error && (
-          <View className=" p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-right mb-5 flex items-end" >
+          <View className=" p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-left mb-5 flex items-end" >
             <Text style={styles.errorText}  >{error}</Text>
           </View>
         )}
@@ -112,7 +112,7 @@ const SignupScreen = ({navigation , route}) => {
   <TextInput
     style={styles.inputStyle}
     id="email"
-    placeholder="أدخل البريد الاكلتروني"
+  
     textContentType="emailAddress"
         keyboardType="email-address"
         autoCapitalize="none"
@@ -136,7 +136,7 @@ const SignupScreen = ({navigation , route}) => {
     <TextInput
       style={styles.inputStyle}
       id="password"
-      placeholder="*********"
+    
       textContentType="password"
           secureTextEntry
           autoCapitalize="none"
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.secondary,
     fontSize: FONTSIZE.size_14,
     color: COLORS.White,
-    textAlign: 'right',
+    textAlign: 'left',
   },
   textAreaInput: {
     textAlignVertical: 'top',

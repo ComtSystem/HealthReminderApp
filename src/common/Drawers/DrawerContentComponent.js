@@ -67,12 +67,7 @@ export const DrawerContentComponent = ({ props }) => {
      navigation={navigation}
      toNav={"WhoWeAreScreen"}
    />
-   <SettingComponentDrawer
-     icon="phone-hangup-outline"
-     heading="Contact Us"
-     navigation={navigation}
-     toNav={"ContactUsScreen"}
-   />
+
 
  </View>
 
